@@ -3,41 +3,45 @@
 {% block title %}Sign Up - Ticket App{% endblock %}
 
 {% block body %}
-<div class="container mt-16">
-    <div class="max-w-md mx-auto">
-        <div class="card">
-            <h2 class="text-2xl font-bold mb-6 text-center">Create an Account</h2>
-            
-            <form id="signupForm">
-                <div class="form-group">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" id="name" name="name" class="form-input" required>
-                    <div id="name-error" class="form-error"></div>
+<div class="container" style="max-width: 1440px;">
+    <div class="row justify-content-center mt-5">
+        <div class="col-xl-5 col-lg-6 col-md-7 col-sm-9">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">Create an Account</h2>
+                    
+                    <form id="signupForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-control form-control-lg" required>
+                            <div id="name-error" class="text-danger mt-1"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control form-control-lg" required>
+                            <div id="email-error" class="text-danger mt-1"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" class="form-control form-control-lg" required>
+                            <div id="password-error" class="text-danger mt-1"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-lg" required>
+                            <div id="confirmPassword-error" class="text-danger mt-1"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2">Sign Up</button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? <a href="/auth/login" class="btn btn-outline-primary">Login</a></p>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" name="email" class="form-input" required>
-                    <div id="email-error" class="form-error"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" required>
-                    <div id="password-error" class="form-error"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
-                    <div id="confirmPassword-error" class="form-error"></div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary w-full">Sign Up</button>
-            </form>
-            
-            <div class="mt-4 text-center">
-                <p>Already have an account? <a href="/auth/login" class="btn btn-outline-primary">Login</a></p>
             </div>
         </div>
     </div>
@@ -94,9 +98,12 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
     const existingUser = storedUsers.find(u => u.email === email);
     
     if (existingUser) {
-        showToast('User with this email already exists', 'error');
+        document.getElementById('email-error').textContent = 'User with this email already exists';
+        isValid = false;
         return;
     }
+    
+    if (!isValid) return;
     
     // Create new user
     const newUser = {
@@ -119,7 +126,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
     showToast('Account created successfully!', 'success');
     setTimeout(() => {
         window.location.href = '/dashboard';
-    }, 1000);
+    }, 1500);
 });
 </script>
 {% endblock %}

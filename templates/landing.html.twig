@@ -3,43 +3,76 @@
 {% block title %}Ticket App - Home{% endblock %}
 
 {% block body %}
-<div class="container mx-auto">
-    <div class="hero">
-        <div class="decorative-circle circle-large" style="top: 20%; left: 10%;"></div>
-        <div class="decorative-circle circle-medium" style="bottom: 15%; right: 15%;"></div>
-        <svg class="wave-svg" viewBox="0 0 1200 300" preserveAspectRatio="none">
-            <path d="M0,280 L0,300 L1200,300 L1200,280 C1000,200 800,350 600,280 C400,210 200,300 0,280 Z" fill="#f8fafc"/>
+<div class="container" style="max-width: 1440px;">
+    <div class="hero position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--bs-primary) 0%, #3b82f6 100%);">
+        <div class="position-absolute top-0 start-0 w-25 h-25 bg-light bg-opacity-25 rounded-circle" style="top: 20%; left: 10%;"></div>
+        <div class="position-absolute bottom-0 end-0 w-15 h-15 bg-light bg-opacity-25 rounded-circle" style="bottom: 15%; right: 15%;"></div>
+        <svg class="wave-svg position-absolute bottom-0 start-0 w-100" viewBox="0 0 1200 300" preserveAspectRatio="none">
+            <path d="M0,280 L0,300 L1200,300 L1200,280 C1000,200 800,350 600,280 C400,210 200,300 0,280 Z" fill="white"/>
         </svg>
-        <div class="hero-content">
+        <div class="hero-content py-5">
             <div class="container">
-                <h1 class="text-4xl font-bold mb-4">Ticket Management App</h1>
-                <p class="text-xl mb-8">Manage your tickets efficiently with our powerful platform</p>
-                <div class="flex gap-4 justify-center">
-                    <a href="/auth/login" class="btn btn-primary">Login</a>
-                    <a href="/auth/signup" class="btn btn-outline-primary">Get Started</a>
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center">
+                        <h1 class="display-4 fw-bold text-white mb-4">Ticket Management App</h1>
+                        <p class="lead text-white mb-5">Manage your tickets efficiently with our powerful platform</p>
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                            <a href="/auth/login" class="btn btn-light btn-lg px-4 py-2">Login</a>
+                            <a href="/auth/signup" class="btn btn-outline-light btn-lg px-4 py-2">Get Started</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="features py-16">
+    <div class="features py-5 py-md-8">
         <div class="container">
-            <h2 class="text-3xl font-bold text-center mb-12">Features</h2>
-            <div class="grid">
-                <div class="card text-center">
-                    <h3 class="text-xl font-semibold mb-4">Create Tickets</h3>
-                    <p>Easily create and assign tickets with detailed information and priority levels.</p>
+            <h2 class="text-center mb-5 mb-md-8 fw-bold">Features</h2>
+            <div class="row g-4 g-lg-5">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title">Create Tickets</h3>
+                            <p class="card-text">Easily create and assign tickets with detailed information and priority levels.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card text-center">
-                    <h3 class="text-xl font-semibold mb-4">Track Progress</h3>
-                    <p>Monitor ticket status in real-time with our intuitive dashboard.</p>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title">Track Progress</h3>
+                            <p class="card-text">Monitor ticket status in real-time with our intuitive dashboard.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card text-center">
-                    <h3 class="text-xl font-semibold mb-4">Resolve Issues</h3>
-                    <p>Quickly resolve tickets and keep your team productive and organized.</p>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title">Resolve Issues</h3>
+                            <p class="card-text">Quickly resolve tickets and keep your team productive and organized.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Check if user is already authenticated, redirect to dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('ticketapp_session');
+    if (token) {
+        try {
+            const session = JSON.parse(token);
+            if (session && session.id) {
+                window.location.href = '/dashboard';
+            }
+        } catch (e) {
+            // If there's an issue parsing the token, ignore it
+        }
+    }
+});
+</script>
 {% endblock %}

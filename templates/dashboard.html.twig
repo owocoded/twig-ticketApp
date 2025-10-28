@@ -3,42 +3,68 @@
 {% block title %}Dashboard - Ticket App{% endblock %}
 
 {% block body %}
-<nav class="nav navbar navbar-expand-md">
-    <div class="container">
-        <a href="/" class="nav-brand">TicketApp</a>
-        <button class="navbar-toggler" type="button" onclick="toggleMobileMenu()">
-            <span>☰</span>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <div class="container" style="max-width: 1440px;">
+        <a href="/" class="navbar-brand">TicketApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="nav-links">
-            <a href="/dashboard" class="nav-link">Dashboard</a>
-            <a href="/tickets" class="nav-link">Tickets</a>
-            <button id="logoutBtn" class="btn btn-outline-primary">Logout</button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link active">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/tickets" class="nav-link">Tickets</a>
+                </li>
+            </ul>
+            <button id="logoutBtn" class="btn btn-outline-light">Logout</button>
         </div>
     </div>
 </nav>
 
-<div class="container mt-8">
-    <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="card text-center">
-            <h3 class="text-lg font-semibold mb-2">Total Tickets</h3>
-            <p id="totalTickets" class="text-3xl font-bold">0</p>
-        </div>
-        <div class="card text-center">
-            <h3 class="text-lg font-semibold mb-2">Open Tickets</h3>
-            <p id="openTickets" class="text-3xl font-bold" style="color: var(--status-open);">0</p>
-        </div>
-        <div class="card text-center">
-            <h3 class="text-lg font-semibold mb-2">Resolved Tickets</h3>
-            <p id="resolvedTickets" class="text-3xl font-bold" style="color: var(--status-closed);">0</p>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2 class="text-xl font-semibold mb-4">Recent Tickets</h2>
-        <div id="recentTickets">
-            <p>No tickets found.</p>
+<div class="container" style="max-width: 1440px;">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h1 class="mb-4">Dashboard</h1>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-xl-4 col-md-6">
+                    <div class="card text-center h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h3 class="card-title">Total Tickets</h3>
+                            <p id="totalTickets" class="display-5 fw-bold">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <div class="card text-center h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h3 class="card-title">Open Tickets</h3>
+                            <p id="openTickets" class="display-5 fw-bold" style="color: var(--status-open);">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <div class="card text-center h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h3 class="card-title">Resolved Tickets</h3>
+                            <p id="resolvedTickets" class="display-5 fw-bold" style="color: var(--status-closed);">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h2 class="h5 mb-0">Recent Tickets</h2>
+                </div>
+                <div class="card-body">
+                    <div id="recentTickets">
+                        <p class="mb-0">No tickets found.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -66,14 +92,14 @@ function loadTickets() {
         
         recent.forEach(ticket => {
             const ticketElement = document.createElement('div');
-            ticketElement.className = 'p-4 border-b border-gray-200';
+            ticketElement.className = 'border-bottom py-3';
             ticketElement.innerHTML = `
-                <div class="flex justify-between items-center">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h3 class="font-medium">${ticket.title}</h3>
-                        <p class="text-sm text-gray-500">Created: ${new Date(ticket.created_at).toLocaleDateString()}</p>
+                        <h5 class="mb-1">${ticket.title}</h5>
+                        <small class="text-muted">Created: ${new Date(ticket.created_at).toLocaleDateString()}</small>
                     </div>
-                    <span class="status ${ticket.status}">
+                    <span class="status ${ticket.status} badge rounded-pill">
                         ${ticket.status.replace('_', ' ')}
                     </span>
                 </div>
@@ -81,7 +107,7 @@ function loadTickets() {
             recentTicketsContainer.appendChild(ticketElement);
         });
     } else {
-        recentTicketsContainer.innerHTML = '<p>No tickets found.</p>';
+        recentTicketsContainer.innerHTML = '<p class="mb-0">No tickets found.</p>';
     }
 }
 
