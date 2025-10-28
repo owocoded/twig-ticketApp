@@ -1,4 +1,4 @@
-# Ticket Management App - Multi-Framework Implementation
+# Ticket Management App
 
 This is a full-featured ticket management web application with implementations in multiple frontend technologies.
 This repository currently contains the Twig implementation built with Symfony.
