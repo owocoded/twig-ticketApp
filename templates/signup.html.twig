@@ -1,45 +1,46 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block title %}Sign Up - Ticket App{% endblock %}
+{% block title %}Sign Up - Ticket Management App{% endblock %}
 
-{% block body %}
-<div class="container" style="max-width: 1440px;">
-    <div class="row justify-content-center mt-5">
-        <div class="col-xl-5 col-lg-6 col-md-7 col-sm-9">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-5">
-                    <h2 class="card-title text-center mb-4">Create an Account</h2>
-                    
-                    <form id="signupForm">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" id="name" name="name" class="form-control form-control-lg" required>
-                            <div id="name-error" class="text-danger mt-1"></div>
-                        </div>
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow">
+                    <div class="card-header text-center py-4">
+                        <h2 class="mb-0">Create Your Account</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="signupForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+                            
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary">Create Account</button>
+                            </div>
+                        </form>
                         
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" id="email" name="email" class="form-control form-control-lg" required>
-                            <div id="email-error" class="text-danger mt-1"></div>
+                        <div class="text-center">
+                            <div>
+                                <span>Already have an account? </span>
+                                <a href="/auth/login" class="text-decoration-none">Login</a>
+                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control form-control-lg" required>
-                            <div id="password-error" class="text-danger mt-1"></div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-lg" required>
-                            <div id="confirmPassword-error" class="text-danger mt-1"></div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100 py-2">Sign Up</button>
-                    </form>
-                    
-                    <div class="text-center mt-4">
-                        <p class="mb-0">Already have an account? <a href="/auth/login" class="btn btn-outline-primary">Login</a></p>
                     </div>
                 </div>
             </div>
@@ -51,63 +52,28 @@
 document.getElementById('signupForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Clear previous errors
-    document.getElementById('name-error').textContent = '';
-    document.getElementById('email-error').textContent = '';
-    document.getElementById('password-error').textContent = '';
-    document.getElementById('confirmPassword-error').textContent = '';
-    
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     
-    // Validation
-    let isValid = true;
-    
-    if (!name) {
-        document.getElementById('name-error').textContent = 'Name is required';
-        isValid = false;
-    }
-    
-    if (!email) {
-        document.getElementById('email-error').textContent = 'Email is required';
-        isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-        document.getElementById('email-error').textContent = 'Email is invalid';
-        isValid = false;
-    }
-    
-    if (!password) {
-        document.getElementById('password-error').textContent = 'Password is required';
-        isValid = false;
-    } else if (password.length < 6) {
-        document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
-        isValid = false;
-    }
-    
     if (password !== confirmPassword) {
-        document.getElementById('confirmPassword-error').textContent = 'Passwords do not match';
-        isValid = false;
+        alert('Passwords do not match');
+        return;
     }
-    
-    if (!isValid) return;
     
     // Check if user already exists
     const storedUsers = JSON.parse(localStorage.getItem('ticketapp_users')) || [];
     const existingUser = storedUsers.find(u => u.email === email);
     
     if (existingUser) {
-        document.getElementById('email-error').textContent = 'User with this email already exists';
-        isValid = false;
+        alert('User with this email already exists');
         return;
     }
     
-    if (!isValid) return;
-    
     // Create new user
     const newUser = {
-        id: Date.now(), // Simple ID generation
+        id: Date.now(),
         name: name,
         email: email,
         password: password
@@ -123,10 +89,8 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
         name: newUser.name
     }));
     
-    showToast('Account created successfully!', 'success');
-    setTimeout(() => {
-        window.location.href = '/dashboard';
-    }, 1500);
+    // Redirect to dashboard
+    window.location.href = '/dashboard';
 });
 </script>
 {% endblock %}

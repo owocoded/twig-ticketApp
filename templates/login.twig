@@ -1,0 +1,72 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Login - Ticket Management App{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow">
+                    <div class="card-header text-center py-4">
+                        <h2 class="mb-0">Login to Your Account</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <a href="#" class="text-decoration-none">Forgot password?</a>
+                            </div>
+                            <div>
+                                <span>Don't have an account? </span>
+                                <a href="/auth/signup" class="text-decoration-none">Create account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    // Simulate authentication with localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('ticketapp_users')) || [];
+    const user = storedUsers.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+        // Set session token
+        localStorage.setItem('ticketapp_session', JSON.stringify({
+            id: user.id,
+            email: user.email,
+            name: user.name
+        }));
+        
+        // Redirect to dashboard
+        window.location.href = '/dashboard';
+    } else {
+        alert('Invalid email or password');
+    }
+});
+</script>
+{% endblock %}

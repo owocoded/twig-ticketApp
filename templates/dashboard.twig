@@ -1,0 +1,166 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Dashboard - Ticket Management App{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">TicketApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets">Tickets</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Hi, <span id="username">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" id="logoutLink">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1>Welcome back, <span id="welcomeUser">User</span>!</h1>
+    </div>
+    
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Open Tickets</h5>
+                    <h2 id="openTicketsCount">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">In Progress</h5>
+                    <h2 id="progressTicketsCount">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Resolved Tickets</h5>
+                    <h2 id="resolvedTicketsCount">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Tickets</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticketsTableBody">
+                        <tr>
+                            <td colspan="5" class="text-center">No tickets found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get user info from localStorage
+    const session = JSON.parse(localStorage.getItem('ticketapp_session') || '{}');
+    const username = session.name || 'User';
+    
+    document.getElementById('username').textContent = username;
+    document.getElementById('welcomeUser').textContent = username;
+    
+    // Load tickets data
+    loadTickets();
+    
+    // Logout functionality
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('ticketapp_session');
+        window.location.href = '/auth/login';
+    });
+    
+    function loadTickets() {
+        const tickets = JSON.parse(localStorage.getItem('ticketapp_tickets') || '[]');
+        
+        // Calculate ticket counts
+        const openTickets = tickets.filter(t => t.status === 'open').length;
+        const progressTickets = tickets.filter(t => t.status === 'in_progress').length;
+        const resolvedTickets = tickets.filter(t => t.status === 'closed').length;
+        
+        document.getElementById('openTicketsCount').textContent = openTickets;
+        document.getElementById('progressTicketsCount').textContent = progressTickets;
+        document.getElementById('resolvedTicketsCount').textContent = resolvedTickets;
+        
+        // Populate table
+        const tableBody = document.getElementById('ticketsTableBody');
+        
+        if (tickets.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No tickets found</td></tr>';
+            return;
+        }
+        
+        tableBody.innerHTML = '';
+        tickets.slice(0, 5).forEach(ticket => { // Show only first 5
+            const row = document.createElement('tr');
+            
+            // Format status badge
+            let badgeClass = 'badge bg-secondary';
+            if (ticket.status === 'open') badgeClass = 'badge bg-info';
+            else if (ticket.status === 'in_progress') badgeClass = 'badge bg-warning text-dark';
+            else if (ticket.status === 'closed') badgeClass = 'badge bg-success';
+            
+            row.innerHTML = `
+                <td>${ticket.id}</td>
+                <td>${ticket.title}</td>
+                <td><span class="${badgeClass}">${ticket.status.replace('_', ' ')}</span></td>
+                <td>${new Date(ticket.created_at).toLocaleDateString()}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-1">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+    }
+});
+</script>
+{% endblock %}

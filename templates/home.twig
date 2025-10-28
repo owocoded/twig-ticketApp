@@ -1,0 +1,108 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Home - Ticket Management App{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">TicketApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets">Tickets</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Hi, <span id="username">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" id="logoutLink">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 class="display-4">Ticket Management App</h1>
+            <p class="lead">Manage your tickets efficiently and effectively</p>
+            
+            <div class="mt-4">
+                <a href="/dashboard" class="btn btn-primary btn-lg me-2">Go to Dashboard</a>
+                <a href="/tickets" class="btn btn-outline-primary btn-lg">View Tickets</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-ticket-detailed fs-1 text-primary"></i>
+                    <h5 class="card-title">Create Tickets</h5>
+                    <p class="card-text">Easily create and assign tickets with detailed information.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bar-chart-line fs-1 text-success"></i>
+                    <h5 class="card-title">Track Progress</h5>
+                    <p class="card-text">Monitor ticket status in real-time with our intuitive dashboard.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle fs-1 text-info"></i>
+                    <h5 class="card-title">Resolve Issues</h5>
+                    <p class="card-text">Quickly resolve tickets and keep your team productive.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get user info from localStorage
+    const session = JSON.parse(localStorage.getItem('ticketapp_session') || '{}');
+    const username = session.name || 'User';
+    
+    document.getElementById('username').textContent = username;
+    
+    // Logout functionality
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('ticketapp_session');
+        window.location.href = '/auth/login';
+    });
+    
+    // Check authentication status
+    const token = localStorage.getItem('ticketapp_session');
+    if (!token) {
+        window.location.href = '/auth/login';
+    }
+});
+</script>
+{% endblock %}

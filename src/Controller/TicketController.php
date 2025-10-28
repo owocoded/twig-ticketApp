@@ -11,13 +11,13 @@ class TicketController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(): Response
     {
-        return $this->render('landing.html.twig');
+        return $this->render('home.twig');
     }
 
     #[Route('/auth/login', name: 'app_login')]
     public function login(): Response
     {
-        return $this->render('login.html.twig');
+        return $this->render('login.twig');
     }
 
     #[Route('/auth/signup', name: 'app_signup')]
@@ -29,12 +29,12 @@ class TicketController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function dashboard(): Response
     {
-        return $this->render('dashboard.html.twig');
+        return $this->render('dashboard.twig');
     }
 
     #[Route('/tickets', name: 'app_tickets')]
     public function tickets(): Response
     {
-        return $this->render('tickets.html.twig');
+        return $this->render('tickets.twig');
     }
 }
