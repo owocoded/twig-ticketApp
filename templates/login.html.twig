@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login - Ticket App{% endblock %}
+
+{% block body %}
+<div class="container mt-16">
+    <div class="max-w-md mx-auto">
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <div id="email-error" class="form-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                    <div id="password-error" class="form-error"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full">Login</button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <p>Don't have an account? <a href="/auth/signup" class="btn btn-outline-primary">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Clear previous errors
+    document.getElementById('email-error').textContent = '';
+    document.getElementById('password-error').textContent = '';
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    // Simple validation
+    let isValid = true;
+    
+    if (!email) {
+        document.getElementById('email-error').textContent = 'Email is required';
+        isValid = false;
+    }
+    
+    if (!password) {
+        document.getElementById('password-error').textContent = 'Password is required';
+        isValid = false;
+    }
+    
+    if (!isValid) return;
+    
+    // Simulate authentication with localStorage
+    // In a real app, this would be an API call
+    const storedUsers = JSON.parse(localStorage.getItem('ticketapp_users')) || [];
+    const user = storedUsers.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+        // Set session token
+        localStorage.setItem('ticketapp_session', JSON.stringify({
+            id: user.id,
+            email: user.email,
+            name: user.name
+        }));
+        
+        showToast('Login successful!', 'success');
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 1000);
+    } else {
+        showToast('Invalid credentials', 'error');
+    }
+});
+</script>
+{% endblock %}

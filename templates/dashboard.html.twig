@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Ticket App{% endblock %}
+
+{% block body %}
+<nav class="nav navbar navbar-expand-md">
+    <div class="container">
+        <a href="/" class="nav-brand">TicketApp</a>
+        <button class="navbar-toggler" type="button" onclick="toggleMobileMenu()">
+            <span>☰</span>
+        </button>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/tickets" class="nav-link">Tickets</a>
+            <button id="logoutBtn" class="btn btn-outline-primary">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-8">
+    <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card text-center">
+            <h3 class="text-lg font-semibold mb-2">Total Tickets</h3>
+            <p id="totalTickets" class="text-3xl font-bold">0</p>
+        </div>
+        <div class="card text-center">
+            <h3 class="text-lg font-semibold mb-2">Open Tickets</h3>
+            <p id="openTickets" class="text-3xl font-bold" style="color: var(--status-open);">0</p>
+        </div>
+        <div class="card text-center">
+            <h3 class="text-lg font-semibold mb-2">Resolved Tickets</h3>
+            <p id="resolvedTickets" class="text-3xl font-bold" style="color: var(--status-closed);">0</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2 class="text-xl font-semibold mb-4">Recent Tickets</h2>
+        <div id="recentTickets">
+            <p>No tickets found.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load tickets from localStorage
+function loadTickets() {
+    const tickets = JSON.parse(localStorage.getItem('ticketapp_tickets')) || [];
+    
+    // Calculate stats
+    const totalTickets = tickets.length;
+    const openTickets = tickets.filter(ticket => ticket.status === 'open').length;
+    const resolvedTickets = tickets.filter(ticket => ticket.status === 'closed').length;
+    
+    // Update stats
+    document.getElementById('totalTickets').textContent = totalTickets;
+    document.getElementById('openTickets').textContent = openTickets;
+    document.getElementById('resolvedTickets').textContent = resolvedTickets;
+    
+    // Show recent tickets
+    const recentTicketsContainer = document.getElementById('recentTickets');
+    if (tickets.length > 0) {
+        const recent = tickets.slice(0, 5); // Show 5 most recent
+        recentTicketsContainer.innerHTML = '';
+        
+        recent.forEach(ticket => {
+            const ticketElement = document.createElement('div');
+            ticketElement.className = 'p-4 border-b border-gray-200';
+            ticketElement.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-medium">${ticket.title}</h3>
+                        <p class="text-sm text-gray-500">Created: ${new Date(ticket.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span class="status ${ticket.status}">
+                        ${ticket.status.replace('_', ' ')}
+                    </span>
+                </div>
+            `;
+            recentTicketsContainer.appendChild(ticketElement);
+        });
+    } else {
+        recentTicketsContainer.innerHTML = '<p>No tickets found.</p>';
+    }
+}
+
+// Logout function
+document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.removeItem('ticketapp_session');
+    window.location.href = '/auth/login';
+});
+
+// Load tickets when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadTickets();
+});
+</script>
+{% endblock %}

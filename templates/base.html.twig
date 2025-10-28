@@ -1,17 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Ticket App{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎫</text></svg>">
+        <link rel="stylesheet" href="{{ asset('assets/styles.css') }}">
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
+        
+        <footer class="footer mt-5">
+            <div class="container">
+                <div class="footer-content text-center">
+                    <p>&copy; 2025 Ticket App. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+        
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+        <script>
+            // Utility function to show toast notifications
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+            
+            // Check authentication for protected routes
+            function checkAuth() {
+                const protectedPaths = ['/dashboard', '/tickets'];
+                const currentPath = window.location.pathname;
+                
+                if (protectedPaths.some(path => currentPath.startsWith(path))) {
+                    const token = localStorage.getItem('ticketapp_session');
+                    if (!token) {
+                        window.location.href = '/auth/login';
+                    }
+                }
+            }
+            
+            // Run auth check when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                checkAuth();
+            });
+            
+            // Toggle mobile menu
+            function toggleMobileMenu() {
+                const navLinks = document.querySelector('.nav-links');
+                navLinks.classList.toggle('show');
+            }
+        </script>
     </body>
 </html>
