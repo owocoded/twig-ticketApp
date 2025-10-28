@@ -117,8 +117,14 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Get user info from localStorage
+    // Check authentication status
     const session = JSON.parse(localStorage.getItem('ticketapp_session') || '{}');
+    if (!session.id) {
+        window.location.href = '/auth/login';
+        return;
+    }
+    
+    // Get user info from localStorage
     const username = session.name || 'User';
     
     document.getElementById('username').textContent = username;
@@ -130,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('logoutLink').addEventListener('click', function(e) {
         e.preventDefault();
         localStorage.removeItem('ticketapp_session');
-        window.location.href = '/auth/login';
+        window.location.href = '/';
     });
     
     // Save ticket functionality

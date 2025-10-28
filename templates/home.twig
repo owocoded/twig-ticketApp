@@ -89,20 +89,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const session = JSON.parse(localStorage.getItem('ticketapp_session') || '{}');
     const username = session.name || 'User';
     
-    document.getElementById('username').textContent = username;
+    // Only update username if user is authenticated
+    if (session.id) {
+        document.getElementById('username').textContent = username;
+    } else {
+        document.getElementById('username').textContent = 'Guest';
+    }
     
     // Logout functionality
     document.getElementById('logoutLink').addEventListener('click', function(e) {
         e.preventDefault();
         localStorage.removeItem('ticketapp_session');
-        window.location.href = '/auth/login';
+        window.location.href = '/';
     });
     
-    // Check authentication status
-    const token = localStorage.getItem('ticketapp_session');
-    if (!token) {
-        window.location.href = '/auth/login';
-    }
+    // No authentication required for home page
 });
 </script>
 {% endblock %}
